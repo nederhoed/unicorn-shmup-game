@@ -24,6 +24,7 @@
     "webpack-dev-server": "^3.10.1"
   },
   "dependencies": {
+    "javascript-state-machine": "^3.1.0",
     "phaser": "^3.22.0",
     "tern-phaser": "^0.2.0",
     "ternjs": "^0.22.0"

@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import Hero from '../entities/Hero';
 import Unicorn from '../entities/Unicorn';
 
 
@@ -11,11 +10,6 @@ class Game extends Phaser.Scene {
   init(data) {}
 
   preload() {
-//    this.load.image('logo', 'assets/phaser3-logo.png');
-    this.load.spritesheet('hero-run-sheet', 'assets/hero/run.png', {
-      frameWidth: 32,
-      frameHeight: 64,
-    });
     this.load.spritesheet('unicorn-fly-sheet', 'assets/unicorn/fly.png', {
       frameWidth: 240,
       frameHeight: 240,
@@ -23,13 +17,10 @@ class Game extends Phaser.Scene {
   }
 
   create(data) {
+    // Interactions
+    this.cursorKeys = this.input.keyboard.createCursorKeys();
 
-    this.anims.create({
-      key: 'hero-running',
-      frames: this.anims.generateFrameNumbers('hero-run-sheet'),
-      frameRate: 8,
-      repeat: -1,
-    });
+    // Visualizations
     this.anims.create({
       key: 'unicorn-flying',
       frames: this.anims.generateFrameNumbers('unicorn-fly-sheet'),
@@ -38,9 +29,12 @@ class Game extends Phaser.Scene {
       yoyo: true,
     });
 
-    this.hero = new Hero(this, 250, 120);
-    this.unicorn = new Unicorn(this, 160, 120);
+    this.hero = new Unicorn(this, 0, 0);
 
+    // Scenery
+    const platform = this.add.rectangle(0, 120, 100, 5, 0xffffff);
+    this.physics.add.existing(platform, true);
+    this.physics.add.collider(this.hero, platform);
   }
 
   update(time, delta) {}

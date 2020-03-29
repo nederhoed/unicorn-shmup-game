@@ -1,4 +1,6 @@
 import Phaser from 'phaser';
+import StateMachine from 'javascript-state-machine';
+
 
 class Unicorn extends Phaser.GameObjects.Sprite {
 
@@ -13,6 +15,85 @@ class Unicorn extends Phaser.GameObjects.Sprite {
     this.scale = 0.25;
     this.body.setSize(120, 160);
     this.body.setOffset(60, 80);
+    this.body.setMaxVelocity(150, 100);
+    this.body.setDragX(100);
+
+    // Interactions
+    this.keys = scene.cursorKeys;
+    this.input = {};
+
+    this.setupMovement();
+  }
+
+  setupMovement() {
+    this.moveState = new StateMachine({
+      init: 'flying',
+      transitions: [
+        {name: 'walk', from: 'standing', to: 'running'},
+        {name: 'stop', from: 'running', to: 'standing'},
+        {name: 'takeoff', from: ['standing', 'running'], to: 'flying'},
+        {name: 'touchdown', from: 'flying', to: 'standing'},
+      ],
+      methods: {
+        onTakeoff: () => {
+          console.log('Take off!');
+        },
+        onTouchdown: () => {
+          console.log('Landing!');
+        },
+        onWalk: () => {
+          console.log('Walking');
+        },
+        onStop: () => {
+          console.log('Stopped');
+        },
+      },
+    });
+
+    this.movePredicates = {
+      walk: () => {
+        return this.body.velocity.x !== 0;
+      },
+      stop: () => {
+        return this.body.velocity.x == 0;
+      },
+      takeoff: () => {
+        return this.input.didPressUp;
+      },
+      touchdown: () => {
+        return this.body.onFloor();
+      },
+    };
+  }
+
+  preUpdate(time, delta) {
+    super.preUpdate(time, delta);
+
+    this.input.didPressUp = this.keys.up.isDown;
+
+    if (this.keys.left.isDown) {
+      this.body.setAccelerationX(-600);
+      this.setFlipX(true);
+      this.body.offset.x = 40;
+    } else if (this.keys.right.isDown) {
+      this.body.setAccelerationX(600);
+      this.setFlipX(false);
+      this.body.offset.x = 60;
+    } else {
+      this.body.setAccelerationX(0);
+    }
+    if (this.keys.up.isDown) {
+      this.body.setAccelerationY(-600);
+    } else {
+      this.body.setAccelerationY(0);
+    }
+
+    for (const t of this.moveState.transitions()) {
+      if (t in this.movePredicates && this.movePredicates[t]()) {
+        this.moveState[t]();
+        break;
+      }
+    }
   }
 }
 
