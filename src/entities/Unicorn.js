@@ -21,8 +21,43 @@ class Unicorn extends Phaser.GameObjects.Sprite {
     // Interactions
     this.keys = scene.cursorKeys;
     this.input = {};
+    this.lastFired = 0;
 
+    this.setupAnimations();
     this.setupMovement();
+  }
+
+  setupAnimations() {
+    this.animState = new StateMachine({
+      init: 'flying',
+      transitions: [
+        {name: 'idle', from: ['flying', 'shooting'], to: 'idle'},
+        {name: 'fly', from: ['idle', 'shooting'], to: 'flying'},
+        {name: 'shoot', from: ['idle', 'flying'], to: 'shooting'},
+      ],
+      methods: {
+        onEnterState: (lifecycle) => {
+          console.log(lifecycle);
+          console.log(this.lastFired);
+          this.anims.play('unicorn-' + lifecycle.to);
+        },
+      },
+    });
+    this.animPredicates = {
+      idle: () => {
+        return (this.body.onFloor()
+          && this.body.velocity.x == 0
+          && this.lastFired == 0);
+      },
+      fly: () => {
+        return (
+          (this.body.velocity.x !== 0 || !this.body.onFloor())
+          && this.lastFired == 0);
+      },
+      shoot: () => {
+        return this.input.didPressSpace;
+      },
+    };
   }
 
   setupMovement() {
@@ -58,7 +93,7 @@ class Unicorn extends Phaser.GameObjects.Sprite {
         return this.body.velocity.x == 0;
       },
       takeoff: () => {
-        return this.input.didPressUp;
+        return this.input.didPressUp || this.body.velocity.y !== 0;
       },
       touchdown: () => {
         return this.body.onFloor();
@@ -69,7 +104,8 @@ class Unicorn extends Phaser.GameObjects.Sprite {
   preUpdate(time, delta) {
     super.preUpdate(time, delta);
 
-    this.input.didPressUp = this.keys.up.isDown;
+    this.input.didPressUp = Phaser.Input.Keyboard.JustDown(this.keys.up);
+    this.input.didPressSpace = Phaser.Input.Keyboard.JustDown(this.keys.space);
 
     if (this.keys.left.isDown) {
       this.body.setAccelerationX(-600);
@@ -87,7 +123,22 @@ class Unicorn extends Phaser.GameObjects.Sprite {
     } else {
       this.body.setAccelerationY(0);
     }
+    if (time > this.lastFired) {
+      if (this.input.didPressSpace) {
+        this.lastFired = time + 200;
+      } else {
+        this.lastFired = 0;
+      }
+    }
 
+    // Animation update
+    for (const t of this.animState.transitions()) {
+      if (t in this.animPredicates && this.animPredicates[t]()) {
+        this.animState[t]();
+        break;
+      }
+    }
+    // Move state update
     for (const t of this.moveState.transitions()) {
       if (t in this.movePredicates && this.movePredicates[t]()) {
         this.moveState[t]();

@@ -10,7 +10,15 @@ class Game extends Phaser.Scene {
   init(data) {}
 
   preload() {
+    this.load.spritesheet('unicorn-idle-sheet', 'assets/unicorn/idle.png', {
+      frameWidth: 240,
+      frameHeight: 240,
+    });
     this.load.spritesheet('unicorn-fly-sheet', 'assets/unicorn/fly.png', {
+      frameWidth: 240,
+      frameHeight: 240,
+    });
+    this.load.spritesheet('unicorn-shoot-sheet', 'assets/unicorn/shoot.png', {
       frameWidth: 240,
       frameHeight: 240,
     });
@@ -28,7 +36,17 @@ class Game extends Phaser.Scene {
       repeat: -1,
       yoyo: true,
     });
-
+    this.anims.create({
+      key: 'unicorn-idle',
+      frames: this.anims.generateFrameNumbers('unicorn-idle-sheet'),
+    });
+    this.anims.create({
+      key: 'unicorn-shooting',
+      frames: this.anims.generateFrameNumbers('unicorn-shoot-sheet'),
+      frameRate: 32 ,
+//      repeat: 1,
+      yoyo: true,
+    });
     this.hero = new Unicorn(this, 0, 0);
 
     // Scenery
