@@ -5,6 +5,7 @@ class Bullet extends Phaser.GameObjects.Sprite {
 
   constructor(scene, x, y) {
     super(scene, x, y, 'bullet-sheet', 0);
+    this.scene = scene;
   }
 
   fire(x, y) {
@@ -12,14 +13,13 @@ class Bullet extends Phaser.GameObjects.Sprite {
 
     this.setActive(true);
     this.setVisible(true);
-
-    this.setVelocityX(300);
+    this.anims.play('bullet');
   }
 
   preUpdate(time, delta) {
     super.preUpdate(time, delta);
 
-    if (this.x > 500) {
+    if (this.y > this.scene.map.heightInPixels) {
         this.setActive(false);
         this.setVisible(false);
     }
