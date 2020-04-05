@@ -2,13 +2,12 @@ import Phaser from 'phaser';
 import Unicorn from '../entities/Unicorn';
 import Bullet from '../entities/Bullet';
 import Bullets from '../entities/Bullets';
+import Obstacle from '../entities/Obstacle';
 
 
 class Game extends Phaser.Scene {
   constructor() {
     super({ key: 'GameScene' });
-
-    this.bullets;
   }
 
   init(data) {}
@@ -34,11 +33,20 @@ class Game extends Phaser.Scene {
       frameWidth: 75,
       frameHeight: 75,
     });
+
+    // Audio
+    this.load.setPath('assets');
+    this.load.audio('fail', '8bit_status_45.mp3');
+    this.load.audio('score', 'Retro_Game_Moon_Jump.mp3');
   }
 
   create(data) {
     // Interactions
     this.cursorKeys = this.input.keyboard.createCursorKeys();
+
+    // Audio
+    this.fail = this.sound.add('fail');
+    this.score = this.sound.add('score');
 
     // Visualizations
     this.anims.create({
@@ -66,11 +74,23 @@ class Game extends Phaser.Scene {
     });
 
     this.addMap();
-    this.addHero(120, 20);
+    this.addHero(60, 20);
 
-    this.bullets = new Bullets(this);
-    this.cursors = this.input.keyboard.createCursorKeys();
+    this.hero.setAmmo(new Bullets(this));
 
+    // Initiate some obstacles
+    this.obstacles = this.add.group();
+
+    var obstacle;
+    for (var i=0; i < 7; i++) {
+      obstacle = new Obstacle(this, 200, 50+i*60, Phaser.Math.Between(2, 10));
+      this.obstacles.add(obstacle);
+    }
+
+    this.physics.add.collider(
+      this.hero.ammo, this.obstacles, obstacle.bulletHitCallback);
+    this.physics.add.collider(
+      this.hero, this.obstacles, this.hero.playerHitsObstacleCallback);
     // // Scenery
     // var platform = this.add.rectangle(30, 120, 60, 5, 0xffffff);
     // this.physics.add.existing(platform, true);
@@ -84,7 +104,7 @@ class Game extends Phaser.Scene {
     this.map = this.make.tilemap({key: 'level-1'});
     const groundTiles = this.map.addTilesetImage('world-1', 'world-1-sheet');
     const groundLayer = this.map.createStaticLayer('Ground', groundTiles);
-    groundLayer.setCollision([9, 89, 44, 13, 21, 60], true);
+    groundLayer.setCollision([9, 89, 44, 13, 21, 60, 94], true);
 
     // XXX: DEBUGGING
     // const debugGraphic = this.add.graphics();
@@ -101,14 +121,7 @@ class Game extends Phaser.Scene {
       this.hero, this.map.getLayer('Ground').tilemapLayer);
   }
 
-  update(time, delta) {
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.down)) {
-      console.log('FIRE!!');
-      console.log(this.hero.body.x);
-      this.bullets.fireBullet(this.hero.x, this.hero.y);
-    }
-
-  }
+  update(time, delta) {}
 }
 
 export default Game;

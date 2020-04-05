@@ -9,22 +9,42 @@ class Unicorn extends Phaser.GameObjects.Sprite {
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
+    this.scene = scene;
 
     this.anims.play('unicorn-flying');
     this.body.setCollideWorldBounds(true);
     this.scale = 0.25;
     this.body.setSize(120, 160);
     this.body.setOffset(60, 80);
-    this.body.setMaxVelocity(150, 100);
-    this.body.setDragX(100);
+    this.body.setMaxVelocity(150, 150);
+    this.body.setDragX(50);
 
     // Interactions
     this.keys = scene.cursorKeys;
     this.input = {};
+    this.ammo = {};
     this.lastFired = 0;
 
     this.setupAnimations();
     this.setupMovement();
+  }
+
+  setAmmo(bullets) {
+    this.ammo = bullets;
+  }
+
+  playerHitsObstacleCallback(playerHit, objectHit) {
+    if (playerHit.active && objectHit.active) {
+      console.log('player hits obstacle');
+      // Detect success or loss
+      if (objectHit.isFriendly()) {
+        playerHit.scene.score.play();
+      } else {
+        playerHit.scene.fail.play();
+      }
+      // Remove obstacle from game
+      objectHit.kill();
+    }
   }
 
   setupAnimations() {
@@ -33,7 +53,7 @@ class Unicorn extends Phaser.GameObjects.Sprite {
       transitions: [
         {name: 'idle', from: ['flying', 'shooting'], to: 'idle'},
         {name: 'fly', from: ['idle', 'shooting'], to: 'flying'},
-        {name: 'shoot', from: ['idle', 'flying'], to: 'shooting'},
+        {name: 'shoot', from: ['idle', 'flying', 'shooting'], to: 'shooting'},
       ],
       methods: {
         onEnterState: (lifecycle) => {
@@ -93,7 +113,7 @@ class Unicorn extends Phaser.GameObjects.Sprite {
         return this.body.velocity.x == 0;
       },
       takeoff: () => {
-        return this.input.didPressUp || this.body.velocity.y !== 0;
+        return this.body.velocity.y !== 0;
       },
       touchdown: () => {
         return this.body.onFloor();
@@ -104,7 +124,6 @@ class Unicorn extends Phaser.GameObjects.Sprite {
   preUpdate(time, delta) {
     super.preUpdate(time, delta);
 
-    this.input.didPressUp = Phaser.Input.Keyboard.JustDown(this.keys.up);
     this.input.didPressSpace = Phaser.Input.Keyboard.JustDown(this.keys.space);
 
     if (this.keys.left.isDown) {
@@ -120,15 +139,18 @@ class Unicorn extends Phaser.GameObjects.Sprite {
     }
     if (this.keys.up.isDown) {
       this.body.setAccelerationY(-600);
+    } else if (this.keys.down.isDown) {
+      this.body.setAccelerationY(300);
     } else {
-      this.body.setAccelerationY(0);
+      this.body.setAccelerationY(-100);
+    }
+    if (this.input.didPressSpace) {
+      if (this.ammo.fireBullet(this)) {
+        this.lastFired = time + 200;
+      }
     }
     if (time > this.lastFired) {
-      if (this.input.didPressSpace) {
-        this.lastFired = time + 200;
-      } else {
-        this.lastFired = 0;
-      }
+      this.lastFired = 0;
     }
 
     // Animation update
