@@ -85,6 +85,17 @@ class Game extends Phaser.Scene {
     for (var i=0; i < 7; i++) {
       obstacle = new Obstacle(this, 200, 50+i*60, Phaser.Math.Between(2, 10));
       this.obstacles.add(obstacle);
+      obstacle.body.setVelocityX(Phaser.Math.Between(5, 15));
+    }
+    for (var i=0; i < 7; i++) {
+      obstacle = new Obstacle(this, 600, 50+i*60, Phaser.Math.Between(2, 10));
+      this.obstacles.add(obstacle);
+      obstacle.body.setVelocityX(-1 * Phaser.Math.Between(-10, 10));
+    }
+    for (var i=0; i < 7; i++) {
+      obstacle = new Obstacle(this, 1000, 50+i*60, Phaser.Math.Between(2, 10));
+      this.obstacles.add(obstacle);
+      obstacle.body.setVelocityX(Phaser.Math.Between(-5, -20));
     }
 
     this.physics.add.collider(

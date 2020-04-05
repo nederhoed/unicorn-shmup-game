@@ -9,8 +9,8 @@ class Obstacle extends Phaser.GameObjects.Sprite {
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    this.body.setSize(20, 20);
-    this.body.setOffset(28, 28);
+    this.body.setSize(22, 40);
+    this.body.setOffset(25, 16);
     this.body.setAllowGravity(false);
 
     this.scene = scene;
@@ -24,7 +24,7 @@ class Obstacle extends Phaser.GameObjects.Sprite {
 
     // Show number
     this.text = scene.add.text(
-      x-10, y-30, this.value, {fontFamily: '"Roboto Condensed"', fontSize: 24});
+      x-10, y-30, this.value, {fontFamily: '"Roboto Condensed"', fontSize: 22});
 //    this.text = scene.add.dynamicBitmapText(x, y-20, 'desyrel', '99', 72);
   }
 
@@ -66,6 +66,7 @@ class Obstacle extends Phaser.GameObjects.Sprite {
   preUpdate(time, delta) {
     super.preUpdate(time, delta);
     this.text.setText(this.value);
+    this.text.setPosition(this.body.x, this.body.y);
     if (this.isFriendly()) {
       this.text.setColor('#ffffff');
       this.text.setBackgroundColor('#00ff00');
