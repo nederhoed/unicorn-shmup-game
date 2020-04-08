@@ -5,6 +5,17 @@ import Bullets from '../entities/Bullets';
 import Obstacle from '../entities/Obstacle';
 
 
+// TODO: MenuScene => Pick your flying expertise, choose a Math level
+// TODO: GameOver event => Back to MENU
+// TODO: HeroDies event => 1 heart less in HUDScene
+
+
+function getRandomMultipleWithNoise(base_number, max_multiple) {
+  // TODO: move this function to a utils file?
+  // TODO: add noise to not end up to far from a valid multiple for higher base_numbers
+  return Phaser.Math.Between(base_number, base_number*max_multiple);
+}
+
 class Game extends Phaser.Scene {
   constructor() {
     super({ key: 'GameScene' });
@@ -16,6 +27,7 @@ class Game extends Phaser.Scene {
 
     this.load.tilemapTiledJSON('level-1', 'assets/tilemaps/level-1.json');
     this.load.image('world-1-sheet', 'assets/tilesets/spritesheet_ground-32x32.png');
+    this.load.image('fire-benthe-sheet', 'assets/tilesets/fire-benthe-32x32.png');
 
     this.load.spritesheet('unicorn-idle-sheet', 'assets/unicorn/idle.png', {
       frameWidth: 240,
@@ -41,6 +53,9 @@ class Game extends Phaser.Scene {
   }
 
   create(data) {
+    // LEVEL VARIABLES TO BE ABSTRACTED
+    this.base_number = 2;
+
     // Interactions
     this.cursorKeys = this.input.keyboard.createCursorKeys();
 
@@ -82,30 +97,55 @@ class Game extends Phaser.Scene {
     this.obstacles = this.add.group();
 
     var obstacle;
-    for (var i=0; i < 7; i++) {
-      obstacle = new Obstacle(this, 200, 50+i*60, Phaser.Math.Between(2, 10));
+    var obstacle_locations = [
+      [9, 4],
+      [13, 3], [17, 2], [21, 3],
+      [11, 6], [11, 7], [11, 10],
+      [16, 6], [16, 7], [16, 10]
+    ]
+    for (var i=0; i < obstacle_locations.length; i++) {
+      console.log(obstacle_locations);
+      var x = obstacle_locations[i][0]*32-16;
+      var y = obstacle_locations[i][1]*32-16;
+      console.log(x, y);
+      obstacle = new Obstacle(
+        this, x, y,
+        this.base_number, getRandomMultipleWithNoise(this.base_number, 6));
       this.obstacles.add(obstacle);
-      obstacle.body.setVelocityX(Phaser.Math.Between(5, 15));
     }
-    for (var i=0; i < 7; i++) {
-      obstacle = new Obstacle(this, 600, 50+i*60, Phaser.Math.Between(2, 10));
+    var obstacle_locations = [
+      [1, 6], [2, 6], [3, 6],
+      [10, 12], [10, 13],
+    ]
+    for (var i=0; i < obstacle_locations.length; i++) {
+      console.log(obstacle_locations);
+      var x = obstacle_locations[i][0]*32-16;
+      var y = obstacle_locations[i][1]*32-16;
+      console.log(x, y);
+      obstacle = new Obstacle(
+        this, x, y,
+        this.base_number, getRandomMultipleWithNoise(this.base_number, 11));
       this.obstacles.add(obstacle);
-      obstacle.body.setVelocityX(-1 * Phaser.Math.Between(-10, 10));
     }
-    for (var i=0; i < 7; i++) {
-      obstacle = new Obstacle(this, 1000, 50+i*60, Phaser.Math.Between(2, 10));
+    for (var i=0; i < 5; i++) {
+      obstacle = new Obstacle(
+        this, 32*(30+i*2)-16, 32-16,
+        this.base_number, getRandomMultipleWithNoise(this.base_number, 7));
       this.obstacles.add(obstacle);
-      obstacle.body.setVelocityX(Phaser.Math.Between(-5, -20));
+      obstacle.body.setVelocityY(Phaser.Math.Between(5, 10));
+    }
+    for (var i=0; i < 5; i++) {
+      obstacle = new Obstacle(
+        this, 32*(30+i*2)-16, 32-16,
+        this.base_number, getRandomMultipleWithNoise(this.base_number, 11));
+      this.obstacles.add(obstacle);
+      obstacle.body.setVelocityY(Phaser.Math.Between(1, 5));
     }
 
     this.physics.add.collider(
       this.hero.ammo, this.obstacles, obstacle.bulletHitCallback);
     this.physics.add.collider(
       this.hero, this.obstacles, this.hero.playerHitsObstacleCallback);
-    // // Scenery
-    // var platform = this.add.rectangle(30, 120, 60, 5, 0xffffff);
-    // this.physics.add.existing(platform, true);
-    // this.physics.add.collider(this.hero, platform);
 
     this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
     this.cameras.main.startFollow(this.hero);
@@ -113,13 +153,20 @@ class Game extends Phaser.Scene {
 
   addMap() {
     this.map = this.make.tilemap({key: 'level-1'});
+
+
     const groundTiles = this.map.addTilesetImage('world-1', 'world-1-sheet');
     const groundLayer = this.map.createStaticLayer('Ground', groundTiles);
-    groundLayer.setCollision([9, 89, 44, 13, 21, 60, 94], true);
+    groundLayer.setCollision([1, 9, 89, 44, 13, 21, 60, 94], true);
+
+    const fireTiles = this.map.addTilesetImage('fire-benthe', 'fire-benthe-sheet');
+    const fireLayer = this.map.createStaticLayer('Fire', fireTiles);
+    fireLayer.setCollision([0, 1, 2, 3, 4, 5, 6], true);
 
     // XXX: DEBUGGING
-    // const debugGraphic = this.add.graphics();
+    const debugGraphic = this.add.graphics();
     // groundLayer.renderDebug(debugGraphic);
+    fireLayer.renderDebug(debugGraphic);
 
     this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
     this.physics.world.setBoundsCollision(true, true, true, true);
@@ -128,8 +175,10 @@ class Game extends Phaser.Scene {
 
   addHero(x, y) {
     this.hero = new Unicorn(this, x, y);
-    this.physics.add.collider(
+   this.physics.add.collider(
       this.hero, this.map.getLayer('Ground').tilemapLayer);
+    this.physics.add.collider(
+      this.hero, this.map.getLayer('Fire').tilemapLayer);
   }
 
   update(time, delta) {}

@@ -38,9 +38,13 @@ class Unicorn extends Phaser.GameObjects.Sprite {
       console.log('player hits obstacle');
       // Detect success or loss
       if (objectHit.isFriendly()) {
+        //  Dispatch a Scene event
+        playerHit.scene.events.emit('addScore', objectHit.getScore());
+        // Positive feedback!
         playerHit.scene.score.play();
       } else {
         playerHit.scene.fail.play();
+        playerHit.scene.events.emit('addScore', -objectHit.getScore());
       }
       // Remove obstacle from game
       objectHit.kill();
@@ -138,11 +142,11 @@ class Unicorn extends Phaser.GameObjects.Sprite {
       this.body.setAccelerationX(0);
     }
     if (this.keys.up.isDown) {
-      this.body.setAccelerationY(-600);
+      this.body.setAccelerationY(-400);
     } else if (this.keys.down.isDown) {
       this.body.setAccelerationY(300);
     } else {
-      this.body.setAccelerationY(-100);
+      this.body.setAccelerationY(0);
     }
     if (this.input.didPressSpace) {
       if (this.ammo.fireBullet(this)) {

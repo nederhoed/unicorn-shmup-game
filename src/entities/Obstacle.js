@@ -3,7 +3,7 @@ import Phaser from 'phaser';
 
 class Obstacle extends Phaser.GameObjects.Sprite {
 
-  constructor(scene, x, y, value) {
+  constructor(scene, x, y, base_number, value) {
     super(scene, x, y, 'bullet-sheet', 0);
 
     scene.add.existing(this);
@@ -14,8 +14,9 @@ class Obstacle extends Phaser.GameObjects.Sprite {
     this.body.setAllowGravity(false);
 
     this.scene = scene;
+    this.multipleOf = base_number;
     this.value = value;
-    this.multipleOf = 2;
+    this.value_changed = true;
 
     this.setActive(true);
     this.setVisible(true);
@@ -31,12 +32,14 @@ class Obstacle extends Phaser.GameObjects.Sprite {
   isFriendly() {
     return this.value % this.multipleOf === 0;
   }
+  getScore() {
+    return parseInt(this.value / this.multipleOf);
+  }
 
   kill() {
-    this.setActive(false);
-    this.setVisible(false);
-//    this.body.reset(0, 0);
     this.text.setText('');
+//    this.scene.obstacles.remove(this);
+    super.destroy();
   }
 
   getValue() {
@@ -45,13 +48,13 @@ class Obstacle extends Phaser.GameObjects.Sprite {
 
   setValue(v) {
     this.value = v;
+    this.value_changed = true;
   }
 
   bulletHitCallback(objectHit, bulletHit) {
     // Remove bullet from game
     if (bulletHit.active && objectHit.active) {
       console.log('bullet hits obstacle');
-      console.log(objectHit.getValue());
       bulletHit.kill();
       // Process hit: countdown
       var v = objectHit.getValue();
@@ -65,14 +68,18 @@ class Obstacle extends Phaser.GameObjects.Sprite {
 
   preUpdate(time, delta) {
     super.preUpdate(time, delta);
-    this.text.setText(this.value);
     this.text.setPosition(this.body.x, this.body.y);
-    if (this.isFriendly()) {
-      this.text.setColor('#ffffff');
-      this.text.setBackgroundColor('#00ff00');
-    } else {
-      this.text.setColor('#00ffff');
-      this.text.setBackgroundColor('#ff0000');
+    if (this.value_changed) {
+      // Update display
+      this.text.setText(this.value);
+      if (this.isFriendly()) {
+        this.text.setColor('#ffffff');
+        this.text.setBackgroundColor('#00ff00');
+      } else {
+        this.text.setColor('#00ffff');
+        this.text.setBackgroundColor('#ff0000');
+      }
+      this.value_changed = false;
     }
   }
 }

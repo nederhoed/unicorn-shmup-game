@@ -34,7 +34,7 @@ class Bullet extends Phaser.GameObjects.Sprite {
   }
 
   fire(player) {
-    this.body.reset(player.x, player.y);
+    this.body.reset(player.x, player.y+10);
     this.body.setAllowGravity(false);
 
     console.log(player.body.velocity.x);
