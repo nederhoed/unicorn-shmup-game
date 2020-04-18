@@ -1,45 +1,70 @@
 import Phaser from 'phaser';
 
 
-class Obstacle extends Phaser.GameObjects.Sprite {
+class Obstacle extends Phaser.GameObjects.Container {
 
   constructor(scene, x, y, base_number, value) {
-    super(scene, x, y, 'bullet-sheet', 0);
+    super(scene, x, y);
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    this.body.setSize(22, 40);
-    this.body.setOffset(25, 16);
-    this.body.setAllowGravity(false);
+    // Obstacle appearance
+    this.fontSize = 22;
+    this.ColorFriendly = '#ffffff';
+    this.backgroundColorFriendly = '#00ff00';
+    this.ColorUnfriendly = '#00ffff';
+    this.backgroundColorUnfriendly = '#ff0000';
 
-    this.scene = scene;
     this.multipleOf = base_number;
     this.value = value;
-    this.value_changed = true;
 
     this.setActive(true);
     this.setVisible(true);
-    this.anims.play('bullet');
-    this.scale = 0.5;
+//    this.anims.play('bullet');
+//    this.scale = 0.5;
 
     // Show number
     this.text = scene.add.text(
-      x-10, y-30, this.value, {fontFamily: '"Roboto Condensed"', fontSize: 22});
+      0, 0, this.value, {fontFamily: '"Roboto Condensed"', fontSize: 22});
+    // Keep in this container
+    this.add([this.text])
+
+    // TODO: Do we want to make it prettier with BitmapText?
 //    this.text = scene.add.dynamicBitmapText(x, y-20, 'desyrel', '99', 72);
+
+    // Enforce display colors
+    this.setValue(value);
   }
 
   isFriendly() {
     return this.value % this.multipleOf === 0;
   }
   getScore() {
-    return parseInt(this.value / this.multipleOf);
+    return Math.floor(this.value / this.multipleOf);
   }
 
   kill() {
-    this.text.setText('');
+    // this.text.setText('');
 //    this.scene.obstacles.remove(this);
     super.destroy();
+  }
+
+  processHit() {
+    this.setValue(this.getValue()-1);
+    if (this.getScore() === 0) {
+      this.kill();
+    }
+  }
+
+  static playerHitsObstacleCallback(playerHit, objectHit) {
+    if (playerHit.active && objectHit.active) {
+      console.log('player hits obstacle');
+      const modifier = objectHit.isFriendly() ? 1 : -1;
+      objectHit.emit('collected', objectHit.getScore() * modifier);
+      // Remove obstacle from game
+      objectHit.kill();
+    }
   }
 
   getValue() {
@@ -48,39 +73,22 @@ class Obstacle extends Phaser.GameObjects.Sprite {
 
   setValue(v) {
     this.value = v;
-    this.value_changed = true;
-  }
+    // Update appearance
+    this.text.setText(this.value);
+    const friend = this.isFriendly();
+    this.text.setColor(
+      friend ? this.ColorFriendly : this.ColorUnfriendly
+    );
+    this.text.setBackgroundColor(
+      friend ? this.backgroundColorFriendly : this.backgroundColorUnfriendly
+    );
+    // Center align to position
+    const c = 1 + Math.floor(Math.log10(this.value));
+    this.body.setSize(2+c*this.fontSize/2, 2+this.fontSize);
+    this.body.setOffset(-c*this.fontSize/4, -1);
+    this.body.setAllowGravity(false);
 
-  bulletHitCallback(objectHit, bulletHit) {
-    // Remove bullet from game
-    if (bulletHit.active && objectHit.active) {
-      console.log('bullet hits obstacle');
-      bulletHit.kill();
-      // Process hit: countdown
-      var v = objectHit.getValue();
-      if (v > 1) {
-        objectHit.setValue(v-1);
-      } else {
-        objectHit.kill();
-      }
-    }
-  }
-
-  preUpdate(time, delta) {
-    super.preUpdate(time, delta);
-    this.text.setPosition(this.body.x, this.body.y);
-    if (this.value_changed) {
-      // Update display
-      this.text.setText(this.value);
-      if (this.isFriendly()) {
-        this.text.setColor('#ffffff');
-        this.text.setBackgroundColor('#00ff00');
-      } else {
-        this.text.setColor('#00ffff');
-        this.text.setBackgroundColor('#ff0000');
-      }
-      this.value_changed = false;
-    }
+    this.text.setPosition(-c*this.fontSize/4, 0);
   }
 }
 

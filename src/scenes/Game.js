@@ -1,6 +1,5 @@
 import Phaser from 'phaser';
 import Unicorn from '../entities/Unicorn';
-import Bullet from '../entities/Bullet';
 import Bullets from '../entities/Bullets';
 import Obstacle from '../entities/Obstacle';
 
@@ -54,7 +53,7 @@ class Game extends Phaser.Scene {
 
   create(data) {
     // LEVEL VARIABLES TO BE ABSTRACTED
-    this.base_number = 2;
+    this.base_number = 5;
 
     // Interactions
     this.cursorKeys = this.input.keyboard.createCursorKeys();
@@ -97,6 +96,15 @@ class Game extends Phaser.Scene {
     this.obstacles = this.add.group();
 
     var obstacle;
+    const onObstacleCollect = (points) => {
+      obstacle.off('collected', onObstacleCollect)
+      this.events.emit('addScore', points)
+      if (points > 0) {
+        this.score.play();
+      } else {
+        this.fail.play();
+      }
+    }
     var obstacle_locations = [
       [9, 4],
       [13, 3], [17, 2], [21, 3],
@@ -110,8 +118,9 @@ class Game extends Phaser.Scene {
       console.log(x, y);
       obstacle = new Obstacle(
         this, x, y,
-        this.base_number, getRandomMultipleWithNoise(this.base_number, 6));
+        this.base_number, getRandomMultipleWithNoise(this.base_number, 50));
       this.obstacles.add(obstacle);
+      obstacle.on('collected', onObstacleCollect);
     }
     var obstacle_locations = [
       [1, 6], [2, 6], [3, 6],
@@ -126,12 +135,14 @@ class Game extends Phaser.Scene {
         this, x, y,
         this.base_number, getRandomMultipleWithNoise(this.base_number, 11));
       this.obstacles.add(obstacle);
+      obstacle.on('collected', onObstacleCollect);
     }
     for (var i=0; i < 5; i++) {
       obstacle = new Obstacle(
         this, 32*(30+i*2)-16, 32-16,
         this.base_number, getRandomMultipleWithNoise(this.base_number, 7));
       this.obstacles.add(obstacle);
+      obstacle.on('collected', onObstacleCollect);
       obstacle.body.setVelocityY(Phaser.Math.Between(5, 10));
     }
     for (var i=0; i < 5; i++) {
@@ -139,21 +150,33 @@ class Game extends Phaser.Scene {
         this, 32*(30+i*2)-16, 32-16,
         this.base_number, getRandomMultipleWithNoise(this.base_number, 11));
       this.obstacles.add(obstacle);
+      obstacle.on('collected', onObstacleCollect);
       obstacle.body.setVelocityY(Phaser.Math.Between(1, 5));
     }
 
+    this.physics.add.overlap(
+      this.hero.ammo, this.obstacles,
+      (x, y) => {this.bulletHitsObstacleCallback(x, y)}
+    );
     this.physics.add.collider(
-      this.hero.ammo, this.obstacles, obstacle.bulletHitCallback);
-    this.physics.add.collider(
-      this.hero, this.obstacles, this.hero.playerHitsObstacleCallback);
+      this.hero, this.obstacles, Obstacle.playerHitsObstacleCallback);
 
     this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
     this.cameras.main.startFollow(this.hero);
   }
 
+  bulletHitsObstacleCallback(objectHit, bulletHit) {
+    // Remove bullet from game
+    if (bulletHit.active && objectHit.active) {
+      console.log('bullet hits obstacle');
+      this.hero.ammo.killBullet(bulletHit);
+      // Process hit: countdown
+      objectHit.processHit();
+    }
+  }
+
   addMap() {
     this.map = this.make.tilemap({key: 'level-1'});
-
 
     const groundTiles = this.map.addTilesetImage('world-1', 'world-1-sheet');
     const groundLayer = this.map.createStaticLayer('Ground', groundTiles);

@@ -23,7 +23,6 @@ class Unicorn extends Phaser.GameObjects.Sprite {
     this.keys = scene.cursorKeys;
     this.input = {};
     this.ammo = {};
-    this.lastFired = 0;
 
     this.setupAnimations();
     this.setupMovement();
@@ -31,24 +30,6 @@ class Unicorn extends Phaser.GameObjects.Sprite {
 
   setAmmo(bullets) {
     this.ammo = bullets;
-  }
-
-  playerHitsObstacleCallback(playerHit, objectHit) {
-    if (playerHit.active && objectHit.active) {
-      console.log('player hits obstacle');
-      // Detect success or loss
-      if (objectHit.isFriendly()) {
-        //  Dispatch a Scene event
-        playerHit.scene.events.emit('addScore', objectHit.getScore());
-        // Positive feedback!
-        playerHit.scene.score.play();
-      } else {
-        playerHit.scene.fail.play();
-        playerHit.scene.events.emit('addScore', -objectHit.getScore());
-      }
-      // Remove obstacle from game
-      objectHit.kill();
-    }
   }
 
   setupAnimations() {
@@ -62,7 +43,6 @@ class Unicorn extends Phaser.GameObjects.Sprite {
       methods: {
         onEnterState: (lifecycle) => {
           console.log(lifecycle);
-          console.log(this.lastFired);
           this.anims.play('unicorn-' + lifecycle.to);
         },
       },
@@ -71,12 +51,14 @@ class Unicorn extends Phaser.GameObjects.Sprite {
       idle: () => {
         return (this.body.onFloor()
           && this.body.velocity.x == 0
-          && this.lastFired == 0);
+          && (!this.animState.is('shooting') || !this.anims.isPlaying)
+        );
       },
       fly: () => {
         return (
           (this.body.velocity.x !== 0 || !this.body.onFloor())
-          && this.lastFired == 0);
+          && (!this.animState.is('shooting') || !this.anims.isPlaying)
+        );
       },
       shoot: () => {
         return this.input.didPressSpace;
@@ -149,12 +131,7 @@ class Unicorn extends Phaser.GameObjects.Sprite {
       this.body.setAccelerationY(0);
     }
     if (this.input.didPressSpace) {
-      if (this.ammo.fireBullet(this)) {
-        this.lastFired = time + 200;
-      }
-    }
-    if (time > this.lastFired) {
-      this.lastFired = 0;
+      this.ammo.fireBullet(this);
     }
 
     // Animation update
