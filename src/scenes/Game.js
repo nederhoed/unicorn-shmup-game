@@ -22,34 +22,7 @@ class Game extends Phaser.Scene {
 
   init(data) {}
 
-  preload() {
-
-    this.load.tilemapTiledJSON('level-1', 'assets/tilemaps/level-1.json');
-    this.load.image('world-1-sheet', 'assets/tilesets/spritesheet_ground-32x32.png');
-    this.load.image('fire-benthe-sheet', 'assets/tilesets/fire-benthe-32x32.png');
-
-    this.load.spritesheet('unicorn-idle-sheet', 'assets/unicorn/idle.png', {
-      frameWidth: 240,
-      frameHeight: 240,
-    });
-    this.load.spritesheet('unicorn-fly-sheet', 'assets/unicorn/fly.png', {
-      frameWidth: 240,
-      frameHeight: 240,
-    });
-    this.load.spritesheet('unicorn-shoot-sheet', 'assets/unicorn/shoot.png', {
-      frameWidth: 240,
-      frameHeight: 240,
-    });
-    this.load.spritesheet('bullet-sheet', 'assets/bullets/star.png', {
-      frameWidth: 75,
-      frameHeight: 75,
-    });
-
-    // Audio
-    this.load.setPath('assets');
-    this.load.audio('fail', '8bit_status_45.mp3');
-    this.load.audio('score', 'Retro_Game_Moon_Jump.mp3');
-  }
+  preload() {}
 
   create(data) {
     // LEVEL VARIABLES TO BE ABSTRACTED
@@ -61,31 +34,6 @@ class Game extends Phaser.Scene {
     // Audio
     this.fail = this.sound.add('fail');
     this.score = this.sound.add('score');
-
-    // Visualizations
-    this.anims.create({
-      key: 'unicorn-flying',
-      frames: this.anims.generateFrameNumbers('unicorn-fly-sheet'),
-      frameRate: 8,
-      repeat: -1,
-      yoyo: true,
-    });
-    this.anims.create({
-      key: 'unicorn-idle',
-      frames: this.anims.generateFrameNumbers('unicorn-idle-sheet'),
-    });
-    this.anims.create({
-      key: 'unicorn-shooting',
-      frames: this.anims.generateFrameNumbers('unicorn-shoot-sheet'),
-      frameRate: 32 ,
-      yoyo: true,
-    });
-    this.anims.create({
-      key: 'bullet',
-      frames: this.anims.generateFrameNumbers('bullet-sheet'),
-      frameRate: 8,
-      repeat: -1,
-    });
 
     this.addMap();
     this.addHero(60, 20);
