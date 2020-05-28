@@ -46,9 +46,8 @@ class Game extends Phaser.Scene {
     // Initiate some obstacles
     this.obstacles = this.add.group();
 
-    var obstacle;
-    const onObstacleCollect = (points) => {
-      obstacle.off('collected', onObstacleCollect)
+    const onObstacleCollect = (object, points) => {
+      object.off('collected', onObstacleCollect)
       this.events.emit('addScore', points)
       if (points > 0) {
         this.score.play();
@@ -67,7 +66,7 @@ class Game extends Phaser.Scene {
       var x = obstacle_locations[i][0]*32-16;
       var y = obstacle_locations[i][1]*32-16;
       console.log(x, y);
-      obstacle = new Obstacle(
+      const obstacle = new Obstacle(
         this, x, y,
         this.base_number, getRandomMultipleWithNoise(this.base_number, 50));
       this.obstacles.add(obstacle);
@@ -82,14 +81,14 @@ class Game extends Phaser.Scene {
       var x = obstacle_locations[i][0]*32-16;
       var y = obstacle_locations[i][1]*32-16;
       console.log(x, y);
-      obstacle = new Obstacle(
+      const  obstacle = new Obstacle(
         this, x, y,
         this.base_number, getRandomMultipleWithNoise(this.base_number, 11));
       this.obstacles.add(obstacle);
       obstacle.on('collected', onObstacleCollect);
     }
     for (var i=0; i < 5; i++) {
-      obstacle = new Obstacle(
+      const  obstacle = new Obstacle(
         this, 32*(30+i*2)-16, 32-16,
         this.base_number, getRandomMultipleWithNoise(this.base_number, 7));
       this.obstacles.add(obstacle);
@@ -97,7 +96,7 @@ class Game extends Phaser.Scene {
       obstacle.body.setVelocityY(Phaser.Math.Between(5, 10));
     }
     for (var i=0; i < 5; i++) {
-      obstacle = new Obstacle(
+      const obstacle = new Obstacle(
         this, 32*(30+i*2)-16, 32-16,
         this.base_number, getRandomMultipleWithNoise(this.base_number, 11));
       this.obstacles.add(obstacle);

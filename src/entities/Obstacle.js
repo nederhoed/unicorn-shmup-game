@@ -61,7 +61,7 @@ class Obstacle extends Phaser.GameObjects.Container {
     if (playerHit.active && objectHit.active) {
       console.log('player hits obstacle');
       const modifier = objectHit.isFriendly() ? 1 : -1;
-      objectHit.emit('collected', objectHit.getScore() * modifier);
+      objectHit.emit('collected', objectHit, objectHit.getScore() * modifier);
       // Remove obstacle from game
       objectHit.kill();
     }
