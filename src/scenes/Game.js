@@ -25,6 +25,9 @@ class Game extends Phaser.Scene {
   preload() {}
 
   create(data) {
+    // Display the HUD
+    this.scene.run('HUDScene');
+
     // LEVEL VARIABLES TO BE ABSTRACTED
     this.base_number = 5;
 

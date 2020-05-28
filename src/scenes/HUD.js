@@ -3,7 +3,7 @@ import Phaser from 'phaser';
 
 class HUDScene extends Phaser.Scene {
   constructor() {
-    super({key: 'HUDScene', active: true});
+    super({key: 'HUDScene'});
   }
 
   preload() {}
