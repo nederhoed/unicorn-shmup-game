@@ -43,67 +43,6 @@ class Game extends Phaser.Scene {
 
     this.hero.setAmmo(new Bullets(this));
 
-    // Initiate some obstacles
-    this.obstacles = this.add.group();
-
-    const onObstacleCollect = (object, points) => {
-      object.off('collected', onObstacleCollect)
-      this.events.emit('addScore', points)
-      if (points > 0) {
-        this.score.play();
-      } else {
-        this.fail.play();
-      }
-    }
-    var obstacle_locations = [
-      [9, 4],
-      [13, 3], [17, 2], [21, 3],
-      [11, 6], [11, 7], [11, 10],
-      [16, 6], [16, 7], [16, 10]
-    ]
-    for (var i=0; i < obstacle_locations.length; i++) {
-      console.log(obstacle_locations);
-      var x = obstacle_locations[i][0]*32-16;
-      var y = obstacle_locations[i][1]*32-16;
-      console.log(x, y);
-      const obstacle = new Obstacle(
-        this, x, y,
-        this.base_number, getRandomMultipleWithNoise(this.base_number, 50));
-      this.obstacles.add(obstacle);
-      obstacle.on('collected', onObstacleCollect);
-    }
-    var obstacle_locations = [
-      [1, 6], [2, 6], [3, 6],
-      [10, 12], [10, 13],
-    ]
-    for (var i=0; i < obstacle_locations.length; i++) {
-      console.log(obstacle_locations);
-      var x = obstacle_locations[i][0]*32-16;
-      var y = obstacle_locations[i][1]*32-16;
-      console.log(x, y);
-      const  obstacle = new Obstacle(
-        this, x, y,
-        this.base_number, getRandomMultipleWithNoise(this.base_number, 11));
-      this.obstacles.add(obstacle);
-      obstacle.on('collected', onObstacleCollect);
-    }
-    for (var i=0; i < 5; i++) {
-      const  obstacle = new Obstacle(
-        this, 32*(30+i*2)-16, 32-16,
-        this.base_number, getRandomMultipleWithNoise(this.base_number, 7));
-      this.obstacles.add(obstacle);
-      obstacle.on('collected', onObstacleCollect);
-      obstacle.body.setVelocityY(Phaser.Math.Between(5, 10));
-    }
-    for (var i=0; i < 5; i++) {
-      const obstacle = new Obstacle(
-        this, 32*(30+i*2)-16, 32-16,
-        this.base_number, getRandomMultipleWithNoise(this.base_number, 11));
-      this.obstacles.add(obstacle);
-      obstacle.on('collected', onObstacleCollect);
-      obstacle.body.setVelocityY(Phaser.Math.Between(1, 5));
-    }
-
     this.physics.add.overlap(
       this.hero.ammo, this.obstacles,
       (x, y) => {this.bulletHitsObstacleCallback(x, y)}
@@ -143,6 +82,44 @@ class Game extends Phaser.Scene {
 
     this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
     this.physics.world.setBoundsCollision(true, true, true, true);
+
+    // Initiate obstacles
+    this.obstacles = this.add.group();
+
+    const onObstacleCollect = (object, points) => {
+      object.off('collected', onObstacleCollect)
+      this.events.emit('addScore', points)
+      if (points > 0) {
+        this.score.play();
+      } else {
+        this.fail.play();
+      }
+    }
+
+    const objectLayer = this.map.getObjectLayer('Objects')
+    if (objectLayer) {
+      objectLayer.objects.forEach(object => {
+        // Get custom object properties
+        const props = (object.properties || []).reduce((p, prop) => {
+          p[prop.name] = prop.value;
+          return p;
+        }, {})
+
+        // Add obstacles
+        if (object.type === 'Obstacle') {
+          const obstacle = new Obstacle(this, 
+            object.x + 16, object.y + 16, 
+            this.base_number, getRandomMultipleWithNoise(this.base_number, props.maxMultiple)
+          );
+          this.obstacles.add(obstacle)
+          if (props.minVelY !== undefined && props.maxVelY !== undefined) {
+            obstacle.body.setVelocityY(Phaser.Math.Between(props.minVelY, props.maxVelY));
+          }
+          obstacle.on('collected', onObstacleCollect);
+        }
+      });
+    }
+
     console.log('Map added');
   }
 
