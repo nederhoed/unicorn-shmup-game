@@ -86,7 +86,7 @@ class Game extends Phaser.Scene {
     const levelProps = mapProperties(this.map.properties);
 
     // Add tileset images
-    this.map.tilesets.forEach(tileset => this.map.addTilesetImage(tileset.name, `${tileset.name}-sheet`))
+    this.map.tilesets.forEach(tileset => this.map.addTilesetImage(tileset.name, `${tileset.name}-sheet`));
 
     // Configure tile layers
     this.map.layers.forEach(layerData => {
@@ -120,8 +120,7 @@ class Game extends Phaser.Scene {
       }
     }
 
-    const objectLayer = this.map.getObjectLayer('Objects')
-    if (objectLayer) {
+    this.map.objects.forEach(objectLayer => {
       objectLayer.objects.forEach(object => {
         // Get custom object properties
         const props = mapProperties(object.properties)
@@ -144,7 +143,7 @@ class Game extends Phaser.Scene {
           obstacle.on('collected', onObstacleCollect);
         }
       });
-    }
+    });
 
     console.log('Map added');
   }
