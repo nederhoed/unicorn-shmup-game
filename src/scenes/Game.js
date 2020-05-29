@@ -38,9 +38,6 @@ class Game extends Phaser.Scene {
     // Display the HUD
     this.scene.run('HUDScene');
 
-    // LEVEL VARIABLES TO BE ABSTRACTED
-    this.base_number = 5;
-
     // Interactions
     this.cursorKeys = this.input.keyboard.createCursorKeys();
 
@@ -84,6 +81,9 @@ class Game extends Phaser.Scene {
 
   addMap(key) {
     this.map = this.make.tilemap({key: key});
+
+    // Extract map level properties
+    const levelProps = mapProperties(this.map.properties);
 
     // Add tileset images
     this.map.tilesets.forEach(tileset => this.map.addTilesetImage(tileset.name, `${tileset.name}-sheet`))
@@ -135,7 +135,7 @@ class Game extends Phaser.Scene {
         if (object.type === 'Obstacle') {
           const obstacle = new Obstacle(this, 
             object.x + 16, object.y + 16, 
-            this.base_number, getRandomMultipleWithNoise(this.base_number, props.maxMultiple)
+            levelProps.baseNumber, getRandomMultipleWithNoise(levelProps.baseNumber, props.maxMultiple)
           );
           this.obstacles.add(obstacle)
           if (props.minVelY !== undefined && props.maxVelY !== undefined) {

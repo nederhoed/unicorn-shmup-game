@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="40" height="16" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="28">
+ <properties>
+  <property name="baseNumber" type="int" value="5"/>
+ </properties>
  <tileset firstgid="1" name="world-1" tilewidth="32" tileheight="32" tilecount="128" columns="8">
   <image source="../assets/tilesets/spritesheet_ground-32x32.png" width="256" height="512"/>
  </tileset>
