@@ -217,5 +217,8 @@
     <property name="minVelY" type="float" value="5"/>
    </properties>
   </object>
+  <object id="25" name="Start" x="48" y="32">
+   <point/>
+  </object>
  </objectgroup>
 </map>

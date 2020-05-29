@@ -39,7 +39,7 @@ class Game extends Phaser.Scene {
     this.score = this.sound.add('score');
 
     this.addMap();
-    this.addHero(60, 20);
+    this.addHero(this.spawnPos.x, this.spawnPos.y);
 
     this.hero.setAmmo(new Bullets(this));
 
@@ -104,6 +104,11 @@ class Game extends Phaser.Scene {
           p[prop.name] = prop.value;
           return p;
         }, {})
+
+        // Set spawn location for hero
+        if (object.name === 'Start') {
+          this.spawnPos = { x: object.x, y: object.y };
+        }
 
         // Add obstacles
         if (object.type === 'Obstacle') {
