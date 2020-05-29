@@ -8,6 +8,17 @@
          "id":3,
          "name":"Fire",
          "opacity":1,
+         "properties":[
+                {
+                 "name":"collideWithHero",
+                 "type":"bool",
+                 "value":true
+                }, 
+                {
+                 "name":"tilesetKey",
+                 "type":"string",
+                 "value":"fire-benthe"
+                }],
          "type":"tilelayer",
          "visible":true,
          "width":40,
@@ -21,6 +32,17 @@
          "id":1,
          "name":"Ground",
          "opacity":1,
+         "properties":[
+                {
+                 "name":"collideWithHero",
+                 "type":"bool",
+                 "value":true
+                }, 
+                {
+                 "name":"tilesetKey",
+                 "type":"string",
+                 "value":"world-1"
+                }],
          "type":"tilelayer",
          "visible":true,
          "width":40,
@@ -672,7 +694,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":27,
+ "nextobjectid":28,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.3",

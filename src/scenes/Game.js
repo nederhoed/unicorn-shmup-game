@@ -8,12 +8,22 @@ import Obstacle from '../entities/Obstacle';
 // TODO: GameOver event => Back to MENU
 // TODO: HeroDies event => 1 heart less in HUDScene
 
+// Colliding tile indices for tilesets
+const tilesetCollisions = {
+  'world-1': [1, 9, 89, 44, 13, 21, 60, 94],
+  'fire-benthe': [0, 1, 2, 3, 4, 5, 6],
+}
 
 function getRandomMultipleWithNoise(base_number, max_multiple) {
   // TODO: move this function to a utils file?
   // TODO: add noise to not end up to far from a valid multiple for higher base_numbers
   return Phaser.Math.Between(base_number, base_number*max_multiple);
 }
+
+const mapProperties = (properties) => (properties || []).reduce((p, prop) => {
+  p[prop.name] = prop.value;
+  return p;
+}, {})
 
 class Game extends Phaser.Scene {
   constructor() {
@@ -38,20 +48,28 @@ class Game extends Phaser.Scene {
     this.fail = this.sound.add('fail');
     this.score = this.sound.add('score');
 
-    this.addMap();
+    this.addMap('level-1');
     this.addHero(this.spawnPos.x, this.spawnPos.y);
+    this.addColliders();
 
-    this.hero.setAmmo(new Bullets(this));
+    this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
+    this.cameras.main.startFollow(this.hero);
+  }
+
+  addColliders() {
+    // Setup collisions between the hero and the tile layers.
+    this.map.layers.forEach(layerData => {
+      const { collideWithHero } = mapProperties(layerData.properties);
+      if (collideWithHero) {
+        this.physics.add.collider(this.hero, layerData.tilemapLayer);
+      }
+    })
 
     this.physics.add.overlap(
       this.hero.ammo, this.obstacles,
       (x, y) => {this.bulletHitsObstacleCallback(x, y)}
     );
-    this.physics.add.collider(
-      this.hero, this.obstacles, Obstacle.playerHitsObstacleCallback);
-
-    this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-    this.cameras.main.startFollow(this.hero);
+    this.physics.add.collider(this.hero, this.obstacles, Obstacle.playerHitsObstacleCallback);
   }
 
   bulletHitsObstacleCallback(objectHit, bulletHit) {
@@ -64,21 +82,27 @@ class Game extends Phaser.Scene {
     }
   }
 
-  addMap() {
-    this.map = this.make.tilemap({key: 'level-1'});
+  addMap(key) {
+    this.map = this.make.tilemap({key: key});
 
-    const groundTiles = this.map.addTilesetImage('world-1', 'world-1-sheet');
-    const groundLayer = this.map.createStaticLayer('Ground', groundTiles);
-    groundLayer.setCollision([1, 9, 89, 44, 13, 21, 60, 94], true);
+    // Add tileset images
+    this.map.tilesets.forEach(tileset => this.map.addTilesetImage(tileset.name, `${tileset.name}-sheet`))
 
-    const fireTiles = this.map.addTilesetImage('fire-benthe', 'fire-benthe-sheet');
-    const fireLayer = this.map.createStaticLayer('Fire', fireTiles);
-    fireLayer.setCollision([0, 1, 2, 3, 4, 5, 6], true);
+    // Configure tile layers
+    this.map.layers.forEach(layerData => {
+      const { tilesetKey } = mapProperties(layerData.properties);
+      if (tilesetKey) {
+        const layer = this.map.createStaticLayer(layerData.name, this.map.getTileset(tilesetKey))
+        if (tilesetCollisions[tilesetKey]) {
+          layer.setCollision(tilesetCollisions[tilesetKey], true);
+        }
+      }
+    })
 
     // XXX: DEBUGGING
     const debugGraphic = this.add.graphics();
-    // groundLayer.renderDebug(debugGraphic);
-    fireLayer.renderDebug(debugGraphic);
+    // this.map.getLayer('Ground').tilemapLayer.renderDebug(debugGraphic);
+    this.map.getLayer('Fire').tilemapLayer.renderDebug(debugGraphic);
 
     this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
     this.physics.world.setBoundsCollision(true, true, true, true);
@@ -100,10 +124,7 @@ class Game extends Phaser.Scene {
     if (objectLayer) {
       objectLayer.objects.forEach(object => {
         // Get custom object properties
-        const props = (object.properties || []).reduce((p, prop) => {
-          p[prop.name] = prop.value;
-          return p;
-        }, {})
+        const props = mapProperties(object.properties)
 
         // Set spawn location for hero
         if (object.name === 'Start') {
@@ -130,10 +151,7 @@ class Game extends Phaser.Scene {
 
   addHero(x, y) {
     this.hero = new Unicorn(this, x, y);
-   this.physics.add.collider(
-      this.hero, this.map.getLayer('Ground').tilemapLayer);
-    this.physics.add.collider(
-      this.hero, this.map.getLayer('Fire').tilemapLayer);
+    this.hero.setAmmo(new Bullets(this));
   }
 
   update(time, delta) {}
