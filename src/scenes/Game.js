@@ -67,6 +67,12 @@ class Game extends Phaser.Scene {
       (x, y) => {this.bulletHitsObstacleCallback(x, y)}
     );
     this.physics.add.collider(this.hero, this.obstacles, Obstacle.playerHitsObstacleCallback);
+    this.physics.add.overlap(this.hero, this.zones, Game.handleZoneCollision, null, this);
+  }
+
+  static handleZoneCollision(hero, zone) {
+    this.scene.stop('HUDScene');
+    this.scene.start('MenuScene');
   }
 
   bulletHitsObstacleCallback(objectHit, bulletHit) {
@@ -109,6 +115,7 @@ class Game extends Phaser.Scene {
 
     // Initiate obstacles
     this.obstacles = this.add.group();
+    this.zones = this.add.group();
 
     const onObstacleCollect = (object, points) => {
       object.off('collected', onObstacleCollect)
@@ -141,6 +148,16 @@ class Game extends Phaser.Scene {
             obstacle.body.setVelocityY(Phaser.Math.Between(props.minVelY, props.maxVelY));
           }
           obstacle.on('collected', onObstacleCollect);
+        }
+
+        // Add zones
+        if (object.type === 'Zone') {
+          const zone = this.physics.add.staticSprite(object.x, object.y, null);
+          zone.setOrigin(0, 0);
+          zone.body.setSize(object.width, object.height);
+          zone.body.setOffset(zone.width / 2, zone.height / 2);
+          zone.alpha = 0;
+          this.zones.add(zone);
         }
       });
     });

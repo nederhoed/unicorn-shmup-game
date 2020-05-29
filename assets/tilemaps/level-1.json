@@ -686,6 +686,17 @@
                  "width":0,
                  "x":48,
                  "y":32
+                }, 
+                {
+                 "height":96,
+                 "id":28,
+                 "name":"End",
+                 "rotation":0,
+                 "type":"Zone",
+                 "visible":true,
+                 "width":16,
+                 "x":1264,
+                 "y":32
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -694,7 +705,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":28,
+ "nextobjectid":29,
  "orientation":"orthogonal",
  "properties":[
         {
