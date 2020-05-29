@@ -45,7 +45,7 @@ class Game extends Phaser.Scene {
     this.fail = this.sound.add('fail');
     this.score = this.sound.add('score');
 
-    this.addMap('level-1');
+    this.addMap(data.level);
     this.addHero(this.spawnPos.x, this.spawnPos.y);
     this.addColliders();
 

@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import levels from '../data/levels';
 
 class Preload extends Phaser.Scene {
   constructor() {
@@ -15,7 +16,7 @@ class Preload extends Phaser.Scene {
     this.load.setPath('assets');
 
     // Maps
-    this.load.tilemapTiledJSON('level-1', 'tilemaps/level-1.json');
+    levels.forEach(level => this.load.tilemapTiledJSON(level.key, level.file));
     this.load.image('world-1-sheet', 'tilesets/spritesheet_ground-32x32.png');
     this.load.image('fire-benthe-sheet', 'tilesets/fire-benthe-32x32.png');
 
@@ -74,7 +75,7 @@ class Preload extends Phaser.Scene {
     // All preloading and initialization is done. Add start button. (Could alternatively switch straight to menu).
     const startButton = this.add.text(320, 400, 'START', { font: '40px Arial', fill: '#000000' });
     startButton.setOriginFromFrame();
-    this.input.on('pointerup', () => this.scene.start('GameScene'));
+    this.input.on('pointerup', () => this.scene.start('MenuScene'));
   }
 
 }
