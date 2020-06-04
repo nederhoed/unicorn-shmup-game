@@ -6,11 +6,15 @@ class Preload extends Phaser.Scene {
     super({ key: 'PreloadScene' });
   }
 
-  init(data) {}
-
+  init(data) {
+    this.initTime = Date.now();
+  }
+  
   preload() {
     // Add splash image to the scene while content is preloading.
     this.add.image(320, 240, 'splash');
+    const loadingText = this.add.text(320, 400, 'Loading...', { font: '25px Arial', fill: '#000000' });
+    loadingText.setOrigin(0.5, 0);
     
     // Preload all other required assets.
     this.load.setPath('assets');
@@ -72,10 +76,12 @@ class Preload extends Phaser.Scene {
       repeat: -1,
     });
 
-    // All preloading and initialization is done. Add start button. (Could alternatively switch straight to menu).
-    const startButton = this.add.text(320, 400, 'START', { font: '40px Arial', fill: '#000000' });
-    startButton.setOriginFromFrame();
-    this.input.on('pointerup', () => this.scene.start('MenuScene'));
+    // All preloading and initialization is done. Move to menu after a delay.
+    const loadDuration = Date.now() - this.initTime;
+    const minDisplayTime = 2800;
+    setTimeout(() => {
+      this.scene.start('MenuScene');
+    }, minDisplayTime - loadDuration);
   }
 
 }
