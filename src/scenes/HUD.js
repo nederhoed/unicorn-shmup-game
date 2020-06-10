@@ -1,5 +1,4 @@
-import Phaser from 'phaser';
-
+import Phaser, {Data, Scenes} from 'phaser';
 
 class HUDScene extends Phaser.Scene {
   constructor() {
@@ -8,23 +7,27 @@ class HUDScene extends Phaser.Scene {
 
   preload() {}
 
-  scoreHandler(value) {
-    console.log('addScore');
-
-    this.score += value;
-    this.info.setText('Score: ' + this.score);
-  }
-
   create(data) {
-    // TODO: move score and lives to GameScene?
-    this.lives = 3;
-    this.score = 0;
-    //  Our Text object to display the Score
-    this.info = this.add.text(10, 10, 'Score: 0', { font: '48px Arial', fill: '#000000' });
+    const { game } = data;
 
-    //  Listen for events from the Game Scene
-    var ourGame = this.scene.get('GameScene');
-    ourGame.events.on('addScore', (value) => {this.scoreHandler(value)}, this);
+    //  Add text objects to display the current score and lives.
+    const scoreLabel = this.add.text(10, 10, '', { font: '48px Arial', fill: '#000000' });
+    const livesLabel = this.add.text(630, 10, '', { font: '40px Arial', fill: '#000000' });
+    livesLabel.setOrigin(1, 0);
+
+    const updateLabels = () => {
+      scoreLabel.setText(`Score: ${game.data.values.score}`);
+      livesLabel.setText('❤️'.repeat(game.data.values.lives));
+    }
+
+    updateLabels();
+    // Subscribe to data changes on the game scene.
+    game.data.events.on(Data.Events.CHANGE_DATA, updateLabels);
+    // Unsubscribe when this scene shuts down
+    this.events.once(
+      Scenes.Events.SHUTDOWN, 
+      () => game.data.events.off(Data.Events.CHANGE_DATA, updateLabels)
+    );
   }
 }
 

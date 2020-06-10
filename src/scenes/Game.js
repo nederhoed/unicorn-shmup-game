@@ -35,8 +35,12 @@ class Game extends Phaser.Scene {
   preload() {}
 
   create(data) {
+    // Set data properties on the scene.
+    this.data.set('score', 0);
+    this.data.set('lives', 3);
+
     // Display the HUD
-    this.scene.run('HUDScene');
+    this.scene.run('HUDScene', { game: this });
 
     // Interactions
     this.cursorKeys = this.input.keyboard.createCursorKeys();
@@ -68,6 +72,10 @@ class Game extends Phaser.Scene {
   }
 
   static handleZoneCollision(hero, zone) {
+    this.returnToMenu();
+  }
+
+  returnToMenu() {
     this.scene.stop('HUDScene');
     this.scene.start('MenuScene');
   }
@@ -116,11 +124,15 @@ class Game extends Phaser.Scene {
 
     const onObstacleCollect = (object, points) => {
       object.off('collected', onObstacleCollect)
-      this.events.emit('addScore', points)
+      this.data.values.score += points;
       if (points > 0) {
         this.score.play();
       } else {
+        this.data.values.lives -=1;
         this.fail.play();
+        if (this.data.values.lives <= 0) {
+          this.returnToMenu();
+        }
       }
     }
 
