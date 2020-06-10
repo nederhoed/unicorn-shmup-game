@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import Unicorn from '../entities/Unicorn';
 import Bullets from '../entities/Bullets';
 import Obstacle from '../entities/Obstacle';
+import gameState from '../model/gameState';
 
 
 // TODO: MenuScene => Pick your flying expertise, choose a Math level
@@ -38,6 +39,7 @@ class Game extends Phaser.Scene {
     // Set data properties on the scene.
     this.data.set('score', 0);
     this.data.set('lives', 3);
+    this.data.set('levelIndex', data.levelIndex);
 
     // Display the HUD
     this.scene.run('HUDScene', { game: this });
@@ -72,6 +74,7 @@ class Game extends Phaser.Scene {
   }
 
   static handleZoneCollision(hero, zone) {
+    gameState.submitScore(this.data.get('levelIndex'), this.data.get('score'));
     this.returnToMenu();
   }
 
