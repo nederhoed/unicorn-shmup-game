@@ -79,9 +79,15 @@ class Preload extends Phaser.Scene {
     // All preloading and initialization is done. Move to menu after a delay.
     const loadDuration = Date.now() - this.initTime;
     const minDisplayTime = 2800;
-    setTimeout(() => {
+    const id = setTimeout(() => {
       this.scene.start('MenuScene');
     }, minDisplayTime - loadDuration);
+
+    // Skip remaining minimum display time if player clicks.
+    this.input.once('pointerup', () => {
+      clearTimeout(id);
+      this.scene.start('MenuScene');
+    });
   }
 
 }
