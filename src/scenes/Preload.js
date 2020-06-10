@@ -12,8 +12,8 @@ class Preload extends Phaser.Scene {
   
   preload() {
     // Add splash image to the scene while content is preloading.
-    this.add.image(320, 240, 'splash');
-    const loadingText = this.add.text(320, 400, 'Loading...', { font: '25px Arial', fill: '#000000' });
+    this.add.image(320, 210, 'splash');
+    const loadingText = this.add.text(320, 370, 'Loading...', { font: '25px Arial', fill: '#000000' });
     loadingText.setOrigin(0.5, 0);
     
     // Preload all other required assets.
