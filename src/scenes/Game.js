@@ -113,7 +113,7 @@ class Game extends Phaser.Scene {
     // XXX: DEBUGGING
     const debugGraphic = this.add.graphics();
     // this.map.getLayer('Ground').tilemapLayer.renderDebug(debugGraphic);
-    this.map.getLayer('Fire').tilemapLayer.renderDebug(debugGraphic);
+    // this.map.getLayer('Fire').tilemapLayer.renderDebug(debugGraphic);
 
     this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
     this.physics.world.setBoundsCollision(true, true, true, true);

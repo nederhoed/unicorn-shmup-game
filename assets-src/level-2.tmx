@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="40" height="16" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="29">
+ <properties>
+  <property name="baseNumber" type="int" value="7"/>
+ </properties>
+ <tileset firstgid="1" name="world-1" tilewidth="32" tileheight="32" tilecount="128" columns="8">
+  <image source="../assets/tilesets/spritesheet_ground-32x32.png" width="256" height="512"/>
+ </tileset>
+ <tileset firstgid="129" name="fire-benthe" tilewidth="32" tileheight="32" tilecount="6" columns="6">
+  <image source="../assets/tilesets/fire-benthe-32x32.png" width="192" height="32"/>
+  <tile id="0">
+   <objectgroup draworder="index" id="3">
+    <object id="3" x="0.183066" y="6.04119" width="31.9451" height="25.8124"/>
+   </objectgroup>
+   <animation>
+    <frame tileid="0" duration="150"/>
+    <frame tileid="1" duration="150"/>
+    <frame tileid="2" duration="150"/>
+    <frame tileid="3" duration="150"/>
+    <frame tileid="4" duration="150"/>
+    <frame tileid="5" duration="150"/>
+   </animation>
+  </tile>
+  <tile id="1">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="0" y="0" width="32" height="32"/>
+    <object id="2" x="0.0915332" y="9.51945" width="32.0366" height="22.4256"/>
+   </objectgroup>
+  </tile>
+  <tile id="2">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="0.0915332" y="10.8924" width="31.9451" height="20.9611"/>
+   </objectgroup>
+  </tile>
+  <tile id="3">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="0" y="8.23799" width="32.0366" height="23.7071"/>
+   </objectgroup>
+  </tile>
+  <tile id="4">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="0" y="7.96339" width="31.762" height="23.9817"/>
+   </objectgroup>
+  </tile>
+  <tile id="5">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="0.183066" y="9.51945" width="31.3959" height="22.2426"/>
+   </objectgroup>
+  </tile>
+ </tileset>
+ <layer id="1" name="Ground" width="40" height="16">
+  <properties>
+   <property name="collideWithHero" type="bool" value="true"/>
+   <property name="tilesetKey" value="world-1"/>
+  </properties>
+  <data encoding="base64">
+   AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJAAAACQAAAAkAAAAJAAAACQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkAAAAJAAAACQAAAAkAAAACQAAAAkAAAAJAAAACQAAAAkAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGEAAAAJAAAACQAAAAkAAABZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACQAAAAkAAAAJAAAAAIAAAACAAAAAgAAAAIAAAACAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJAAAACQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYQAAAAkAAAAJAAAACQAAAAkAAAAJAAAAWQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AAAAPAAAAB0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGEAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAABZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGEAAAAJAAAACQAAAAkAAAAJAAAAWQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKwAAACQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKwAAACQAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKwAAACQAAAAkAAAAJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKwAAACQAAAAkAAAAJAAAACQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKwAAACQAAAAkAAAAJAAAACQAAAAkAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAA==
+  </data>
+ </layer>
+ <objectgroup id="6" name="Objects">
+  <object id="2" name="M50" type="Obstacle" x="640" y="448" width="32" height="32">
+   <properties>
+    <property name="maxMultiple" type="int" value="50"/>
+    <property name="maxVelY" type="float" value="0"/>
+    <property name="minVelY" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="4" name="M50" type="Obstacle" x="480" y="128" width="32" height="32">
+   <properties>
+    <property name="maxMultiple" type="int" value="50"/>
+    <property name="maxVelY" type="float" value="0"/>
+    <property name="minVelY" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="5" name="M50" type="Obstacle" x="576" y="128" width="32" height="32">
+   <properties>
+    <property name="maxMultiple" type="int" value="50"/>
+    <property name="maxVelY" type="float" value="0"/>
+    <property name="minVelY" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="6" name="M50" type="Obstacle" x="576" y="160" width="32" height="32">
+   <properties>
+    <property name="maxMultiple" type="int" value="50"/>
+    <property name="maxVelY" type="float" value="0"/>
+    <property name="minVelY" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="7" name="M50" type="Obstacle" x="800" y="288" width="32" height="32">
+   <properties>
+    <property name="maxMultiple" type="int" value="50"/>
+    <property name="maxVelY" type="float" value="0"/>
+    <property name="minVelY" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="8" name="M50" type="Obstacle" x="320" y="288" width="32" height="32">
+   <properties>
+    <property name="maxMultiple" type="int" value="50"/>
+    <property name="maxVelY" type="float" value="0"/>
+    <property name="minVelY" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="9" name="M50" type="Obstacle" x="480" y="160" width="32" height="32">
+   <properties>
+    <property name="maxMultiple" type="int" value="50"/>
+    <property name="maxVelY" type="float" value="0"/>
+    <property name="minVelY" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="10" name="M50" type="Obstacle" x="896" y="288" width="32" height="32">
+   <properties>
+    <property name="maxMultiple" type="int" value="50"/>
+    <property name="maxVelY" type="float" value="0"/>
+    <property name="minVelY" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="11" name="M50" type="Obstacle" x="480" y="288" width="32" height="32">
+   <properties>
+    <property name="maxMultiple" type="int" value="50"/>
+    <property name="maxVelY" type="float" value="0"/>
+    <property name="minVelY" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="12" name="M11" type="Obstacle" x="64" y="64" width="32" height="32">
+   <properties>
+    <property name="maxMultiple" type="int" value="11"/>
+    <property name="maxVelY" type="float" value="0"/>
+    <property name="minVelY" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="13" name="M11" type="Obstacle" x="128" y="64" width="32" height="32">
+   <properties>
+    <property name="maxMultiple" type="int" value="11"/>
+    <property name="maxVelY" type="float" value="0"/>
+    <property name="minVelY" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="14" name="M11" type="Obstacle" x="0" y="64" width="32" height="32">
+   <properties>
+    <property name="maxMultiple" type="int" value="11"/>
+    <property name="maxVelY" type="float" value="0"/>
+    <property name="minVelY" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="15" name="M11" type="Obstacle" x="32" y="416" width="32" height="32">
+   <properties>
+    <property name="maxMultiple" type="int" value="11"/>
+    <property name="maxVelY" type="float" value="0"/>
+    <property name="minVelY" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="16" name="M11" type="Obstacle" x="32" y="448" width="32" height="32">
+   <properties>
+    <property name="maxMultiple" type="int" value="11"/>
+    <property name="maxVelY" type="float" value="0"/>
+    <property name="minVelY" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="17" name="M11" type="Obstacle" x="704" y="32" width="32" height="32">
+   <properties>
+    <property name="maxMultiple" type="int" value="11"/>
+    <property name="maxVelY" type="float" value="5"/>
+    <property name="minVelY" type="float" value="1"/>
+   </properties>
+  </object>
+  <object id="18" name="M11" type="Obstacle" x="992" y="64" width="32" height="32">
+   <properties>
+    <property name="maxMultiple" type="int" value="11"/>
+    <property name="maxVelY" type="float" value="5"/>
+    <property name="minVelY" type="float" value="1"/>
+   </properties>
+  </object>
+  <object id="19" name="M11" type="Obstacle" x="256" y="32" width="32" height="32">
+   <properties>
+    <property name="maxMultiple" type="int" value="11"/>
+    <property name="maxVelY" type="float" value="5"/>
+    <property name="minVelY" type="float" value="1"/>
+   </properties>
+  </object>
+  <object id="20" name="M11" type="Obstacle" x="1088" y="64" width="32" height="32">
+   <properties>
+    <property name="maxMultiple" type="int" value="11"/>
+    <property name="maxVelY" type="float" value="5"/>
+    <property name="minVelY" type="float" value="1"/>
+   </properties>
+  </object>
+  <object id="21" name="M7" type="Obstacle" x="832" y="64" width="32" height="32">
+   <properties>
+    <property name="maxMultiple" type="int" value="7"/>
+    <property name="maxVelY" type="float" value="10"/>
+    <property name="minVelY" type="float" value="5"/>
+   </properties>
+  </object>
+  <object id="22" name="M7" type="Obstacle" x="224" y="96" width="32" height="32">
+   <properties>
+    <property name="maxMultiple" type="int" value="7"/>
+    <property name="maxVelY" type="float" value="10"/>
+    <property name="minVelY" type="float" value="5"/>
+   </properties>
+  </object>
+  <object id="23" name="M7" type="Obstacle" x="736" y="96" width="32" height="32">
+   <properties>
+    <property name="maxMultiple" type="int" value="7"/>
+    <property name="maxVelY" type="float" value="10"/>
+    <property name="minVelY" type="float" value="5"/>
+   </properties>
+  </object>
+  <object id="25" name="Start" x="49.3333" y="240">
+   <point/>
+  </object>
+  <object id="28" name="End" type="Zone" x="1264" y="190.667" width="16" height="96"/>
+ </objectgroup>
+</map>
