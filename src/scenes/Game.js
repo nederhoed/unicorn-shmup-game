@@ -69,7 +69,7 @@ class Game extends Phaser.Scene {
     })
 
     this.physics.add.overlap(this.hero.ammo, this.obstacles, this.bulletHitsObstacleCallback, null, this);
-    this.physics.add.collider(this.hero, this.obstacles, Obstacle.playerHitsObstacleCallback);
+    this.physics.add.overlap(this.hero, this.obstacles, Obstacle.playerHitsObstacleCallback);
     this.physics.add.overlap(this.hero, this.zones, Game.handleZoneCollision, null, this);
   }
 
