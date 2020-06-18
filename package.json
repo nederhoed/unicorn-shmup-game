@@ -26,6 +26,7 @@
   "dependencies": {
     "javascript-state-machine": "^3.1.0",
     "phaser": "^3.22.0",
+    "phaser-animated-tiles": "^2.0.2",
     "tern-phaser": "^0.2.0",
     "ternjs": "^0.22.0"
   },

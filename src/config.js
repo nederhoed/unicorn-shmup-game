@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import AnimatedTiles from 'phaser-animated-tiles/dist/AnimatedTiles.js';
 
 export default {
   type: Phaser.AUTO,
@@ -9,6 +10,15 @@ export default {
     height: 480,
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
+  plugins: {
+    scene: [
+      {
+        key: 'AnimatedTiles',
+        plugin: AnimatedTiles,
+        mapping: 'animatedTiles'
+      }
+    ]
   },
   render: {
     pixelArt: true,

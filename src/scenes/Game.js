@@ -106,7 +106,7 @@ class Game extends Phaser.Scene {
     this.map.layers.forEach(layerData => {
       const { tilesetKey } = mapProperties(layerData.properties);
       if (tilesetKey) {
-        const layer = this.map.createStaticLayer(layerData.name, this.map.getTileset(tilesetKey))
+        const layer = this.map.createDynamicLayer(layerData.name, this.map.getTileset(tilesetKey))
         if (tilesetCollisions[tilesetKey]) {
           layer.setCollision(tilesetCollisions[tilesetKey], true);
         }
@@ -173,6 +173,8 @@ class Game extends Phaser.Scene {
         }
       });
     });
+
+    this.sys.animatedTiles.init(this.map);
 
     console.log('Map added');
   }
