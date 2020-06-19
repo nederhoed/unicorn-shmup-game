@@ -39,6 +39,7 @@ class Game extends Phaser.Scene {
     // Set data properties on the scene.
     this.data.set('score', 0);
     this.data.set('lives', 3);
+    this.data.set('time', 0);
     this.data.set('levelIndex', data.levelIndex);
 
     // Display the HUD
@@ -184,7 +185,9 @@ class Game extends Phaser.Scene {
     this.hero.setAmmo(new Bullets(this));
   }
 
-  update(time, delta) {}
+  update(time, delta) {
+    this.data.values.time += delta;
+  }
 }
 
 export default Game;
