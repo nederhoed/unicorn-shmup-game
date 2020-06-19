@@ -1,5 +1,7 @@
 import Phaser from 'phaser'
 
+// To avoid weird bugs, update this if the format of the data being saved changes.
+const SaveName = 'save-data-1';
 
 class GameState extends Phaser.Events.EventEmitter {
   
@@ -7,13 +9,14 @@ class GameState extends Phaser.Events.EventEmitter {
     super()
     this._data = {
       highScores: [],
+      bestTimes: [],
     };
     this.load();
   }
 
   // Loads previously saved game state from local storage.
   load() {
-    const saveData = JSON.parse(localStorage.getItem('save-data'));
+    const saveData = JSON.parse(localStorage.getItem(SaveName));
     if (saveData) {
       this._data = saveData;
     }
@@ -21,7 +24,7 @@ class GameState extends Phaser.Events.EventEmitter {
 
   // Saves current game state to local storage.
   save() {
-    localStorage.setItem('save-data', JSON.stringify(this._data));
+    localStorage.setItem(SaveName, JSON.stringify(this._data));
   }
 
   // Clears previously saved game state from local storage
@@ -37,9 +40,17 @@ class GameState extends Phaser.Events.EventEmitter {
     return this._data.highScores[levelIndex];
   }
 
-  submitScore(levelIndex, score) {
-    const currentMax = this.getHighScore(levelIndex) || 0;
-    this._data.highScores[levelIndex] = Math.max(score, currentMax);
+  getBestTime(levelIndex) {
+    return this._data.bestTimes[levelIndex];
+  }
+
+  submitScore(levelIndex, score, time) {
+    const currentHighScore = this.getHighScore(levelIndex) || 0;
+    this._data.highScores[levelIndex] = Math.max(score, currentHighScore);
+
+    const currentBestTime = this.getBestTime(levelIndex) || Number.MAX_VALUE;
+    this._data.bestTimes[levelIndex] = Math.min(time, currentBestTime);
+
     this.save();
   }
 

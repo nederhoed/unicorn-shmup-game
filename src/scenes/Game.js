@@ -75,7 +75,7 @@ class Game extends Phaser.Scene {
   }
 
   static handleZoneCollision(hero, zone) {
-    gameState.submitScore(this.data.get('levelIndex'), this.data.get('score'));
+    gameState.submitScore(this.data.get('levelIndex'), this.data.get('score'), this.data.get('time'));
     this.returnToMenu();
   }
 
