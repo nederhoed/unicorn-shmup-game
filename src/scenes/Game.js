@@ -11,7 +11,7 @@ import gameState from '../model/gameState';
 
 // Colliding tile indices for tilesets
 const tilesetCollisions = {
-  'world-1': [1, 9, 89, 44, 13, 21, 60, 94],
+  'world-1': [0, 8, 88, 43, 12, 20, 59, 93],
   'fire-benthe': [0, 1, 2, 3, 4, 5, 6],
 }
 
@@ -109,7 +109,8 @@ class Game extends Phaser.Scene {
       if (tilesetKey) {
         const layer = this.map.createDynamicLayer(layerData.name, this.map.getTileset(tilesetKey))
         if (tilesetCollisions[tilesetKey]) {
-          layer.setCollision(tilesetCollisions[tilesetKey], true);
+          const collisions = tilesetCollisions[tilesetKey].map(id => id + this.map.getTileset(tilesetKey).firstgid)
+          layer.setCollision(collisions, true);
         }
       }
     })
