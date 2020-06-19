@@ -45,10 +45,10 @@ class GameState extends Phaser.Events.EventEmitter {
   }
 
   submitScore(levelIndex, score, time) {
-    const currentHighScore = this.getHighScore(levelIndex) || 0;
+    const currentHighScore = this.getHighScore(levelIndex) || Number.MIN_SAFE_INTEGER;
     this._data.highScores[levelIndex] = Math.max(score, currentHighScore);
 
-    const currentBestTime = this.getBestTime(levelIndex) || Number.MAX_VALUE;
+    const currentBestTime = this.getBestTime(levelIndex) || Number.MAX_SAFE_INTEGER;
     this._data.bestTimes[levelIndex] = Math.min(time, currentBestTime);
 
     this.save();
