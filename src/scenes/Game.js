@@ -72,6 +72,13 @@ class Game extends Phaser.Scene {
 
     this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
     this.cameras.main.startFollow(this.hero);
+
+    // Return to menu if user presses esc or q
+    this.input.keyboard.on('keyup', (e) => {
+      if (e.key === 'Escape' || e.key === 'q') {
+        this.returnToMenu();
+      }
+    });
   }
 
   addColliders() {
