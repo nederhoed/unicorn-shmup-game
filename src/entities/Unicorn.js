@@ -1,6 +1,10 @@
 import Phaser from 'phaser';
 import StateMachine from 'javascript-state-machine';
 
+const Defaults = {
+  // Time in ms that the unicorn is invincible after being damaged.
+  InvincibilityDuration: 2000,
+};
 
 class Unicorn extends Phaser.GameObjects.Sprite {
 
@@ -24,8 +28,23 @@ class Unicorn extends Phaser.GameObjects.Sprite {
     this.input = {};
     this.ammo = {};
 
+    this.invincible = false;
+    this.flashCounter = 0;
+
     this.setupAnimations();
     this.setupMovement();
+  }
+
+  damage() {
+    if (!this.invincible) {
+      this.invincible = true;
+      this.scene.time.delayedCall(Defaults.InvincibilityDuration, () => {
+        this.invincible = false;
+        this.alpha = 1;
+      }, null, this);
+      return true;
+    }
+    return false;
   }
 
   setAmmo(bullets) {
@@ -109,6 +128,11 @@ class Unicorn extends Phaser.GameObjects.Sprite {
 
   preUpdate(time, delta) {
     super.preUpdate(time, delta);
+
+    if (this.invincible) {
+      this.flashCounter += delta;
+      this.alpha = (this.flashCounter % 400) < 200 ? 0.5 : 1;
+    }
 
     this.input.didPressSpace = Phaser.Input.Keyboard.JustDown(this.keys.space);
 

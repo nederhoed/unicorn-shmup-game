@@ -12,6 +12,10 @@ import gameState from '../model/gameState';
 // Colliding tile indices for tilesets
 const tilesetCollisions = {
   'world-1': [0, 8, 88, 43, 12, 20, 59, 93],
+  'fire-benthe': [],
+}
+
+const tilesetDamagingTiles = {
   'fire-benthe': [0, 1, 2, 3, 4, 5, 6],
 }
 
@@ -94,6 +98,19 @@ class Game extends Phaser.Scene {
     }
   }
 
+  hitDamagingTile(hero, tile) {
+    if (hero.damage()) {
+      this.loseLife()
+    }
+  }
+
+  loseLife() {
+    this.data.values.lives -=1;
+    if (this.data.values.lives <= 0) {
+      this.returnToMenu();
+    }
+  }
+
   addMap(key) {
     this.map = this.make.tilemap({key: key});
 
@@ -109,8 +126,14 @@ class Game extends Phaser.Scene {
       if (tilesetKey) {
         const layer = this.map.createDynamicLayer(layerData.name, this.map.getTileset(tilesetKey))
         if (tilesetCollisions[tilesetKey]) {
-          const collisions = tilesetCollisions[tilesetKey].map(id => id + this.map.getTileset(tilesetKey).firstgid)
-          layer.setCollision(collisions, true);
+          const ids = tilesetCollisions[tilesetKey].map(id => id + this.map.getTileset(tilesetKey).firstgid)
+          layer.setCollision(ids, true);
+        }
+        if (tilesetDamagingTiles[tilesetKey]) {
+          const ids = tilesetDamagingTiles[tilesetKey].map(id => id + this.map.getTileset(tilesetKey).firstgid)
+          tilesetDamagingTiles[tilesetKey].forEach(id => {
+            layer.setTileIndexCallback(ids, this.hitDamagingTile, this);
+          })
         }
       }
     })
@@ -133,11 +156,8 @@ class Game extends Phaser.Scene {
       if (points > 0) {
         this.score.play();
       } else {
-        this.data.values.lives -=1;
         this.fail.play();
-        if (this.data.values.lives <= 0) {
-          this.returnToMenu();
-        }
+        this.loseLife()
       }
     }
 
