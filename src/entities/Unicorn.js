@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import StateMachine from 'javascript-state-machine';
+import gameState, { Dificulty } from '../model/gameState';
 
 const Defaults = {
   // Time in ms that the unicorn is invincible after being damaged.
@@ -22,6 +23,10 @@ class Unicorn extends Phaser.GameObjects.Sprite {
     this.body.setOffset(60, 80);
     this.body.setMaxVelocity(150, 150);
     this.body.setDragX(50);
+
+    if (gameState.getDificulty() === Dificulty.Junior) {
+      this.body.setDragY(50);
+    }
 
     // Interactions
     this.keys = scene.cursorKeys;

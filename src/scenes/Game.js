@@ -2,8 +2,7 @@ import Phaser from 'phaser';
 import Unicorn from '../entities/Unicorn';
 import Bullets from '../entities/Bullets';
 import Obstacle from '../entities/Obstacle';
-import gameState from '../model/gameState';
-
+import gameState, { Dificulty } from '../model/gameState';
 
 // TODO: MenuScene => Pick your flying expertise, choose a Math level
 // TODO: GameOver event => Back to MENU
@@ -45,6 +44,17 @@ class Game extends Phaser.Scene {
     this.data.set('lives', 3);
     this.data.set('time', 0);
     this.data.set('levelIndex', data.levelIndex);
+
+    // Set settings based on dificulty.
+    switch (gameState.getDificulty()) {
+      case Dificulty.Junior:
+        this.physics.world.gravity.y = 0;
+        break;
+    
+      default:
+        this.physics.world.gravity.y = 100;
+        break;
+    }
 
     // Display the HUD
     this.scene.run('HUDScene', { game: this });
